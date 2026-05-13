@@ -7,6 +7,7 @@ import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postp
 import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
 import Mountain from './Mountain'
+import Cabin from './Cabin'
 import Mountain2 from './Mountain2'
 import Moon from './Moon'
 import Planet from './Planet'
@@ -112,6 +113,7 @@ function SceneContents({ mouse }: { mouse: React.MutableRefObject<[number, numbe
         <Terrain />
         <Trail />
         <Travelers />
+        <Cabin />
       </group>
 
       <EffectComposer>
