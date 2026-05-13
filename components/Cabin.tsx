@@ -6,7 +6,7 @@ import * as THREE from 'three'
 export default function Cabin() {
   return (
     // Right side foreground — in front of tree line so it reads clearly
-    <group position={[5.5, -1.82, -2.8]} rotation={[0, -0.5, 0]} scale={1.4}>
+    <group position={[7.5, -1.82, -1.8]} rotation={[0, -0.5, 0]} scale={1.4}>
 
       {/* ── Walls ───────────────────────────────── */}
       <mesh position={[0, 0.55, 0]}>
