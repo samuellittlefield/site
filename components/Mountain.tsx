@@ -56,17 +56,17 @@ function buildMountainGeo(): THREE.BufferGeometry {
   const colorArr = new Float32Array(niPos.count * 3)
 
   const C = {
-    snow:        new THREE.Color('#F0E8D0'),
-    snowShad:    new THREE.Color('#D0C8B0'),
-    upperRock:   new THREE.Color('#A89070'),
-    midRockWarm: new THREE.Color('#9A7848'),
-    midRockCool: new THREE.Color('#8A6858'),
-    lowerWarm:   new THREE.Color('#8A6840'),
-    lowerDark:   new THREE.Color('#6A4830'),
-    earthWarm:   new THREE.Color('#9A8060'),
-    earthDark:   new THREE.Color('#5A4028'),
-    forest:      new THREE.Color('#3A6020'),
-    forestDark:  new THREE.Color('#284A18'),
+    snow:        new THREE.Color('#F0EAE0'),
+    snowShad:    new THREE.Color('#C8C0D8'),  // purple-tinted shadow snow
+    upperRock:   new THREE.Color('#A890A0'),  // slight purple in upper rock
+    midRockWarm: new THREE.Color('#9A7858'),
+    midRockCool: new THREE.Color('#7A6070'),  // purple-cool shadow
+    lowerWarm:   new THREE.Color('#8A6848'),
+    lowerDark:   new THREE.Color('#5A3858'),  // deep purple-shadow base
+    earthWarm:   new THREE.Color('#7A8048'),
+    earthDark:   new THREE.Color('#485030'),
+    forest:      new THREE.Color('#3A7820'),  // richer green at base
+    forestDark:  new THREE.Color('#205818'),  // deep forest green
   }
 
   for (let i = 0; i < niPos.count; i += 3) {

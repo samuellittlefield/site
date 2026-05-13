@@ -7,6 +7,9 @@ import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postp
 import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
 import Mountain from './Mountain'
+import Mountain2 from './Mountain2'
+import Moon from './Moon'
+import Planet from './Planet'
 import Spaceship from './Spaceship'
 import Terrain from './Terrain'
 import Trees from './Trees'
@@ -14,10 +17,10 @@ import Boulders from './Boulders'
 import Trail from './Trail'
 import Travelers from './Travelers'
 
-const SKY_DEEP    = '#3A6EA8'
-const SKY_MID     = '#7AACCC'
-const SKY_HORIZON = '#E8C878'
-const FOG_COLOR   = '#D4B896'
+const SKY_DEEP    = '#1A0A4E'   // deep indigo-purple
+const SKY_MID     = '#4A3A8C'   // purple-blue mid
+const SKY_HORIZON = '#C878A0'   // warm rose-purple horizon
+const FOG_COLOR   = '#C0A8C8'   // soft purple-gray fog
 
 // ── Sky backdrop with warm gradient ──────────────────────────────────────────
 function Sky() {
@@ -59,7 +62,7 @@ function SceneContents({ mouse }: { mouse: React.MutableRefObject<[number, numbe
   const { camera, scene } = useThree()
 
   useEffect(() => {
-    scene.fog = new THREE.FogExp2(FOG_COLOR, 0.022)
+    scene.fog = new THREE.FogExp2(FOG_COLOR, 0.020)
     return () => { scene.fog = null }
   }, [scene])
 
@@ -93,7 +96,10 @@ function SceneContents({ mouse }: { mouse: React.MutableRefObject<[number, numbe
     <>
       <group ref={bgRef}>
         <Sky />
+        <Moon />
+        <Planet />
         <Mountain />
+        <Mountain2 />
         <Spaceship />
       </group>
 
@@ -137,7 +143,7 @@ export default function HeroScene() {
       <Canvas
         camera={{ position: [-1.5, 3.2, 7.0], fov: 58 }}
         gl={{ antialias: true, toneMappingExposure: 1.1 }}
-        style={{ background: SKY_HORIZON }}
+        style={{ background: '#C878A0' }}
       >
         {/* Warm golden-hour sun from the right */}
         <directionalLight position={[8, 6, 2]}  intensity={2.2} color="#FFD580" />

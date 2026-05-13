@@ -25,32 +25,39 @@ function concatNonIndexed(...geos: THREE.BufferGeometry[]): THREE.BufferGeometry
 }
 
 function makeSpruceGeo(): THREE.BufferGeometry {
-  const trunk = new THREE.CylinderGeometry(0.035, 0.06, 0.38, 5)
-  trunk.translate(0, 0.19, 0)
+  const trunk = new THREE.CylinderGeometry(0.032, 0.065, 0.55, 6)
+  trunk.translate(0, 0.275, 0)
 
+  // 8 tiers: wide at base, tapering tightly to a spire
   const tiers: THREE.BufferGeometry[] = [
-    new THREE.ConeGeometry(0.52, 0.88, 7),
-    new THREE.ConeGeometry(0.40, 0.80, 7),
-    new THREE.ConeGeometry(0.29, 0.72, 7),
-    new THREE.ConeGeometry(0.18, 0.62, 7),
-    new THREE.ConeGeometry(0.09, 0.48, 6),
+    new THREE.ConeGeometry(0.72, 0.72, 9),   // ground skirt — widest
+    new THREE.ConeGeometry(0.60, 0.78, 9),
+    new THREE.ConeGeometry(0.50, 0.76, 9),
+    new THREE.ConeGeometry(0.40, 0.72, 9),
+    new THREE.ConeGeometry(0.30, 0.66, 8),
+    new THREE.ConeGeometry(0.20, 0.58, 8),
+    new THREE.ConeGeometry(0.11, 0.48, 7),
+    new THREE.ConeGeometry(0.05, 0.36, 6),   // top spire
   ]
-  const offsets = [0.65, 1.28, 1.82, 2.28, 2.65]
+  const offsets = [0.62, 1.16, 1.66, 2.12, 2.52, 2.86, 3.14, 3.36]
   tiers.forEach((t, i) => t.translate(0, offsets[i], 0))
 
   return concatNonIndexed(trunk, ...tiers)
 }
 
 function makePineGeo(): THREE.BufferGeometry {
-  const trunk = new THREE.CylinderGeometry(0.04, 0.07, 0.32, 5)
-  trunk.translate(0, 0.16, 0)
+  const trunk = new THREE.CylinderGeometry(0.045, 0.08, 0.45, 6)
+  trunk.translate(0, 0.225, 0)
 
+  // Rounder, fuller silhouette — 5 tiers
   const tiers: THREE.BufferGeometry[] = [
-    new THREE.ConeGeometry(0.70, 0.90, 7),
-    new THREE.ConeGeometry(0.52, 0.80, 7),
-    new THREE.ConeGeometry(0.36, 0.68, 7),
+    new THREE.ConeGeometry(0.90, 0.82, 9),
+    new THREE.ConeGeometry(0.72, 0.78, 9),
+    new THREE.ConeGeometry(0.54, 0.72, 8),
+    new THREE.ConeGeometry(0.36, 0.62, 8),
+    new THREE.ConeGeometry(0.18, 0.48, 7),
   ]
-  const offsets = [0.58, 1.12, 1.58]
+  const offsets = [0.62, 1.18, 1.68, 2.10, 2.44]
   tiers.forEach((t, i) => t.translate(0, offsets[i], 0))
 
   return concatNonIndexed(trunk, ...tiers)
