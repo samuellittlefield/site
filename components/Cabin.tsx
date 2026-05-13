@@ -5,8 +5,8 @@ import * as THREE from 'three'
 // Simple low-poly cabin — walls, roof, chimney, warm window glow
 export default function Cabin() {
   return (
-    // Right side of scene, nestled near the mountain base
-    <group position={[6.5, -1.82, -5.5]} rotation={[0, -0.6, 0]}>
+    // Right side foreground — in front of tree line so it reads clearly
+    <group position={[5.5, -1.82, -2.8]} rotation={[0, -0.5, 0]} scale={1.4}>
 
       {/* ── Walls ───────────────────────────────── */}
       <mesh position={[0, 0.55, 0]}>

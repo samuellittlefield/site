@@ -120,11 +120,11 @@ function generateTrees(): TreeSpec[] {
   place(-5, -1.5, 0.5, 2.5, 8, 'spruce', 1.1, 1.6, -1.82)
   place(-3, -2.0, 0.5, 2.0, 5, 'pine',   1.0, 1.4, -1.82)
 
-  // Right-side trees — fills the blank right area, clusters around cabin
-  place(7,  -5, 0.5, 5.0, 18, 'spruce', 0.8, 1.3, -1.82)
-  place(9,  -7, 0.5, 4.5, 14, 'pine',   0.7, 1.1, -1.82)
-  place(5,  -3, 0.5, 3.0, 10, 'spruce', 0.9, 1.4, -1.82)
-  place(10, -4, 0.5, 4.0, 10, 'pine',   0.7, 1.2, -1.82)
+  // Right-side trees — behind and around cabin, not in front of it
+  place(8,  -6, 1.5, 5.5, 18, 'spruce', 0.8, 1.3, -1.82)
+  place(10, -8, 1.0, 4.5, 14, 'pine',   0.7, 1.1, -1.82)
+  place(8,  -4, 2.0, 4.5, 10, 'spruce', 0.9, 1.3, -1.82)
+  place(11, -5, 1.0, 4.0, 10, 'pine',   0.7, 1.2, -1.82)
 
   return trees
 }
