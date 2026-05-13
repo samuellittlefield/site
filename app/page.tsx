@@ -47,10 +47,9 @@ export default function Home() {
 
             {/* Bio */}
             <p className="text-slate-600 leading-relaxed text-lg font-light mb-14 max-w-2xl">
-              I&apos;m Samuel. This space is a collection of experiences I&apos;ve had
-              and thoughts about them that my brain responded to. I want to collect
-              these things in a place that helps me observe these thoughts and reflect
-              on them as they evolve. I hope there&apos;s something here you enjoy.
+              I&apos;m Samuel. This space is a collection of artifacts that resonate
+              with me. From hiking routes I&apos;ve enjoyed to Arduino weather stations
+              I&apos;ve built. Let&apos;s build something together.
             </p>
 
             {/* Photo placeholder */}
