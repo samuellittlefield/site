@@ -23,20 +23,20 @@ export default function Cabin() {
       ))}
 
       {/* ── Roof ────────────────────────────────── */}
-      {/* Left slope */}
-      <mesh position={[-0.42, 1.30, 0]} rotation={[0, 0, -0.72]}>
+      {/* Left slope — rises toward center */}
+      <mesh position={[-0.42, 1.30, 0]} rotation={[0, 0, 0.72]}>
         <boxGeometry args={[0.96, 0.07, 1.12]} />
         <meshStandardMaterial color="#3A2810" roughness={0.9} metalness={0} />
       </mesh>
-      {/* Right slope */}
-      <mesh position={[0.42, 1.30, 0]} rotation={[0, 0, 0.72]}>
+      {/* Right slope — rises toward center */}
+      <mesh position={[0.42, 1.30, 0]} rotation={[0, 0, -0.72]}>
         <boxGeometry args={[0.96, 0.07, 1.12]} />
-        <meshStandardMaterial color="#3A2810" roughness={0.9} metalness={0} />
+        <meshStandardMaterial color="#2E2008" roughness={0.9} metalness={0} />
       </mesh>
       {/* Ridge cap */}
-      <mesh position={[0, 1.62, 0]}>
-        <boxGeometry args={[0.12, 0.12, 1.14]} />
-        <meshStandardMaterial color="#2A1A08" roughness={0.95} metalness={0} />
+      <mesh position={[0, 1.65, 0]}>
+        <boxGeometry args={[0.14, 0.12, 1.14]} />
+        <meshStandardMaterial color="#1E1208" roughness={0.95} metalness={0} />
       </mesh>
 
       {/* ── Chimney ─────────────────────────────── */}
