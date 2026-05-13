@@ -3,130 +3,141 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { TRAIL_CURVE } from './Trail'
 
-function Hiker({ offset = 0 }: { offset?: number }) {
-  const ref = useRef<THREE.Group>(null)
+const _pos    = new THREE.Vector3()
+const _tangent = new THREE.Vector3()
+const _quat   = new THREE.Quaternion()
+const _up     = new THREE.Vector3(0, 1, 0)
+const _fwd    = new THREE.Vector3(0, 0, -1)
 
-  useFrame((state) => {
+function useCurveTravel(speed: number, startT: number) {
+  const tRef = useRef(startT)
+  return (delta: number) => {
+    tRef.current = (tRef.current + delta * speed) % 1
+    TRAIL_CURVE.getPointAt(tRef.current, _pos)
+    TRAIL_CURVE.getTangentAt(tRef.current, _tangent)
+    _quat.setFromUnitVectors(_fwd, _tangent)
+    return { pos: _pos.clone(), quat: _quat.clone() }
+  }
+}
+
+// ── Hiker ─────────────────────────────────────────────────────────────────────
+function Hiker() {
+  const ref  = useRef<THREE.Group>(null)
+  const travel = useCurveTravel(0.022, 0.08)
+
+  useFrame((_, delta) => {
     if (!ref.current) return
-    const t = (state.clock.elapsedTime * 0.3 + offset) % 1
-    const x = -5 + t * 4.5
-    ref.current.position.x = x
-    // Subtle bob
-    ref.current.position.y = -1.72 + Math.sin(state.clock.elapsedTime * 3.5 + offset * 10) * 0.015
+    const { pos, quat } = travel(delta)
+    ref.current.position.copy(pos)
+    ref.current.quaternion.copy(quat)
+    // Subtle walking bob
+    ref.current.position.y += Math.sin(performance.now() * 0.004) * 0.008
   })
 
   return (
-    <group ref={ref} position={[-5, -1.72, -0.4]}>
+    <group ref={ref} scale={0.38}>
       {/* Head */}
-      <mesh position={[0, 0.22, 0]}>
-        <boxGeometry args={[0.07, 0.07, 0.07]} />
-        <meshPhongMaterial color="#c8956c" flatShading />
+      <mesh position={[0, 0.24, 0]}>
+        <boxGeometry args={[0.08, 0.08, 0.08]} />
+        <meshPhongMaterial color="#D4A070" />
       </mesh>
-      {/* Hat brim */}
-      <mesh position={[0, 0.27, 0]}>
-        <cylinderGeometry args={[0.055, 0.055, 0.015, 6]} />
-        <meshPhongMaterial color="#4a3728" flatShading />
+      {/* Hat */}
+      <mesh position={[0, 0.30, 0]}>
+        <cylinderGeometry args={[0.06, 0.07, 0.04, 6]} />
+        <meshPhongMaterial color="#7A4E28" />
       </mesh>
-      {/* Hat top */}
-      <mesh position={[0, 0.305, 0]}>
-        <cylinderGeometry args={[0.035, 0.04, 0.05, 6]} />
-        <meshPhongMaterial color="#4a3728" flatShading />
+      <mesh position={[0, 0.33, 0]}>
+        <cylinderGeometry args={[0.038, 0.042, 0.055, 6]} />
+        <meshPhongMaterial color="#7A4E28" />
       </mesh>
       {/* Torso */}
-      <mesh position={[0, 0.12, 0]}>
-        <boxGeometry args={[0.09, 0.14, 0.07]} />
-        <meshPhongMaterial color="#c0392b" flatShading />
+      <mesh position={[0, 0.13, 0]}>
+        <boxGeometry args={[0.095, 0.145, 0.072]} />
+        <meshPhongMaterial color="#E03520" />
       </mesh>
       {/* Pack */}
-      <mesh position={[0.01, 0.12, -0.05]}>
-        <boxGeometry args={[0.06, 0.1, 0.05]} />
-        <meshPhongMaterial color="#7f8c8d" flatShading />
+      <mesh position={[0, 0.14, -0.055]}>
+        <boxGeometry args={[0.07, 0.11, 0.05]} />
+        <meshPhongMaterial color="#7A8A6A" />
       </mesh>
-      {/* Left leg */}
-      <mesh position={[-0.025, -0.02, 0]}>
-        <boxGeometry args={[0.035, 0.1, 0.04]} />
-        <meshPhongMaterial color="#2c3e50" flatShading />
+      {/* Legs */}
+      <mesh position={[-0.028, -0.02, 0]}>
+        <boxGeometry args={[0.036, 0.105, 0.042]} />
+        <meshPhongMaterial color="#2C3E50" />
       </mesh>
-      {/* Right leg */}
-      <mesh position={[0.025, -0.02, 0]}>
-        <boxGeometry args={[0.035, 0.1, 0.04]} />
-        <meshPhongMaterial color="#2c3e50" flatShading />
+      <mesh position={[0.028, -0.02, 0]}>
+        <boxGeometry args={[0.036, 0.105, 0.042]} />
+        <meshPhongMaterial color="#2C3E50" />
       </mesh>
-      {/* Trekking pole */}
-      <mesh position={[0.07, 0.06, 0.02]} rotation={[0, 0, 0.2]}>
-        <cylinderGeometry args={[0.006, 0.006, 0.22, 4]} />
-        <meshPhongMaterial color="#95a5a6" flatShading />
+      {/* Pole */}
+      <mesh position={[0.08, 0.07, 0.02]} rotation={[0, 0, 0.22]}>
+        <cylinderGeometry args={[0.006, 0.006, 0.24, 4]} />
+        <meshPhongMaterial color="#A0A8A0" />
       </mesh>
     </group>
   )
 }
 
-function Cyclist({ offset = 0 }: { offset?: number }) {
-  const groupRef = useRef<THREE.Group>(null)
-  const wheelRef1 = useRef<THREE.Mesh>(null)
-  const wheelRef2 = useRef<THREE.Mesh>(null)
+// ── Cyclist ───────────────────────────────────────────────────────────────────
+function Cyclist() {
+  const ref      = useRef<THREE.Group>(null)
+  const wRef1    = useRef<THREE.Mesh>(null)
+  const wRef2    = useRef<THREE.Mesh>(null)
+  const travel   = useCurveTravel(0.048, 0.55)
 
-  useFrame((state) => {
-    if (!groupRef.current) return
-    const t = (state.clock.elapsedTime * 0.55 + offset) % 1
-    const x = -5 + t * 4.5
-    groupRef.current.position.x = x
+  useFrame((_, delta) => {
+    if (!ref.current) return
+    const { pos, quat } = travel(delta)
+    ref.current.position.copy(pos)
+    ref.current.quaternion.copy(quat)
 
-    const spin = state.clock.elapsedTime * 4
-    if (wheelRef1.current) wheelRef1.current.rotation.z = spin
-    if (wheelRef2.current) wheelRef2.current.rotation.z = spin
+    const spin = performance.now() * 0.005
+    if (wRef1.current) wRef1.current.rotation.x = spin
+    if (wRef2.current) wRef2.current.rotation.x = spin
   })
 
-  const wheelColor = '#2c3e50'
-  const spokeColor = '#95a5a6'
-
   return (
-    <group ref={groupRef} position={[-5, -1.66, -0.8]}>
+    <group ref={ref} scale={0.38}>
       {/* Rear wheel */}
-      <mesh ref={wheelRef1} position={[-0.14, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.1, 0.012, 6, 12]} />
-        <meshPhongMaterial color={wheelColor} flatShading />
+      <mesh ref={wRef1} position={[-0.16, 0.1, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <torusGeometry args={[0.1, 0.014, 6, 14]} />
+        <meshPhongMaterial color="#2C3E50" />
       </mesh>
       {/* Front wheel */}
-      <mesh ref={wheelRef2} position={[0.14, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.1, 0.012, 6, 12]} />
-        <meshPhongMaterial color={wheelColor} flatShading />
+      <mesh ref={wRef2} position={[0.16, 0.1, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <torusGeometry args={[0.1, 0.014, 6, 14]} />
+        <meshPhongMaterial color="#2C3E50" />
       </mesh>
-      {/* Frame top tube */}
-      <mesh position={[0, 0.08, 0]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[0.008, 0.008, 0.28, 4]} />
-        <meshPhongMaterial color={spokeColor} flatShading />
+      {/* Frame */}
+      <mesh position={[0, 0.14, 0]}>
+        <boxGeometry args={[0.32, 0.018, 0.012]} />
+        <meshPhongMaterial color="#9AA0A8" />
       </mesh>
-      {/* Frame down tube */}
-      <mesh position={[0.05, 0.0, 0]} rotation={[0, 0, 0.4]}>
-        <cylinderGeometry args={[0.007, 0.007, 0.22, 4]} />
-        <meshPhongMaterial color={spokeColor} flatShading />
-      </mesh>
-      {/* Seat tube */}
-      <mesh position={[-0.05, 0.02, 0]} rotation={[0, 0, -0.15]}>
-        <cylinderGeometry args={[0.007, 0.007, 0.18, 4]} />
-        <meshPhongMaterial color={spokeColor} flatShading />
+      <mesh position={[-0.04, 0.17, 0]} rotation={[0, 0, 0.5]}>
+        <cylinderGeometry args={[0.008, 0.008, 0.2, 4]} />
+        <meshPhongMaterial color="#9AA0A8" />
       </mesh>
       {/* Handlebar */}
-      <mesh position={[0.14, 0.1, 0]}>
-        <boxGeometry args={[0.02, 0.04, 0.09]} />
-        <meshPhongMaterial color={wheelColor} flatShading />
+      <mesh position={[0.16, 0.20, 0]}>
+        <boxGeometry args={[0.016, 0.06, 0.1]} />
+        <meshPhongMaterial color="#2C3E50" />
       </mesh>
       {/* Rider torso */}
-      <mesh position={[0.02, 0.19, 0]} rotation={[0, 0, 0.5]}>
-        <boxGeometry args={[0.08, 0.13, 0.065]} />
-        <meshPhongMaterial color="#27ae60" flatShading />
+      <mesh position={[0.03, 0.30, 0]} rotation={[0, 0, 0.55]}>
+        <boxGeometry args={[0.085, 0.14, 0.068]} />
+        <meshPhongMaterial color="#2ECC40" />
       </mesh>
       {/* Rider head */}
-      <mesh position={[0.09, 0.28, 0]}>
-        <boxGeometry args={[0.065, 0.065, 0.065]} />
-        <meshPhongMaterial color="#c8956c" flatShading />
+      <mesh position={[0.12, 0.40, 0]}>
+        <boxGeometry args={[0.068, 0.068, 0.068]} />
+        <meshPhongMaterial color="#D4A070" />
       </mesh>
       {/* Helmet */}
-      <mesh position={[0.09, 0.33, 0]}>
-        <boxGeometry args={[0.075, 0.04, 0.075]} />
-        <meshPhongMaterial color="#f39c12" flatShading />
+      <mesh position={[0.12, 0.455, 0]}>
+        <boxGeometry args={[0.078, 0.042, 0.078]} />
+        <meshPhongMaterial color="#F4A820" />
       </mesh>
     </group>
   )
@@ -134,9 +145,9 @@ function Cyclist({ offset = 0 }: { offset?: number }) {
 
 export default function Travelers() {
   return (
-    <group>
-      <Hiker offset={0.1} />
-      <Cyclist offset={0.6} />
-    </group>
+    <>
+      <Hiker />
+      <Cyclist />
+    </>
   )
 }

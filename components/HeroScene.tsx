@@ -1,118 +1,153 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo, Suspense } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { ScrollControls, useScroll } from '@react-three/drei'
+import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing'
+import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
 import Mountain from './Mountain'
-import Forest from './Forest'
+import Terrain from './Terrain'
+import Trees from './Trees'
+import Boulders from './Boulders'
+import Trail from './Trail'
 import Travelers from './Travelers'
 
-const GROUND_COLOR = '#8fa87a'
-const SKY_TOP = '#6ba3d6'
-const SKY_HORIZON = '#c4dff0'
+const SKY_DEEP    = '#3A6EA8'
+const SKY_MID     = '#7AACCC'
+const SKY_HORIZON = '#E8C878'
+const FOG_COLOR   = '#D4B896'
 
-// Ground plane
-function Ground() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.82, 0]}>
-      <planeGeometry args={[40, 20]} />
-      <meshPhongMaterial color={GROUND_COLOR} flatShading />
-    </mesh>
-  )
-}
-
-// Gradient sky background (drawn as a large vertical plane)
+// ── Sky backdrop with warm gradient ──────────────────────────────────────────
 function Sky() {
+  const geo = useMemo(() => {
+    const g = new THREE.PlaneGeometry(160, 50, 1, 12)
+    const deep    = new THREE.Color(SKY_DEEP)
+    const mid     = new THREE.Color(SKY_MID)
+    const horizon = new THREE.Color(SKY_HORIZON)
+    const pos = g.attributes.position as THREE.BufferAttribute
+    const colors = new Float32Array(pos.count * 3)
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i)
+      const t = Math.max(0, Math.min(1, (y + 25) / 50))
+      const c = t > 0.5
+        ? mid.clone().lerp(deep, (t - 0.5) * 2)
+        : horizon.clone().lerp(mid, t * 2)
+      colors[i*3]   = c.r
+      colors[i*3+1] = c.g
+      colors[i*3+2] = c.b
+    }
+    g.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+    return g
+  }, [])
+
   return (
-    <mesh position={[0, 2, -14]}>
-      <planeGeometry args={[60, 20]} />
-      <meshBasicMaterial color={SKY_HORIZON} />
+    <mesh position={[5, 8, -20]} geometry={geo}>
+      <meshBasicMaterial vertexColors side={THREE.FrontSide} />
     </mesh>
   )
 }
 
-// Parallax scene wrapper — responds to mouse + scroll
-function ParallaxScene({ mouse }: { mouse: React.MutableRefObject<[number, number]> }) {
-  const sceneRef = useRef<THREE.Group>(null)
+// ── Parallax + scroll scene ───────────────────────────────────────────────────
+function SceneContents({ mouse }: { mouse: React.MutableRefObject<[number, number]> }) {
   const bgRef = useRef<THREE.Group>(null)
   const mgRef = useRef<THREE.Group>(null)
   const fgRef = useRef<THREE.Group>(null)
+
   const scroll = useScroll()
-  const { camera } = useThree()
+  const { camera, scene } = useThree()
+
+  useEffect(() => {
+    scene.fog = new THREE.FogExp2(FOG_COLOR, 0.022)
+    return () => { scene.fog = null }
+  }, [scene])
 
   useFrame(() => {
     const [mx, my] = mouse.current
-    const scrollOffset = scroll.offset // 0–1
+    const so = scroll.offset
 
-    // Camera drift on scroll — gentle forward + upward tilt
-    camera.position.z = 5.5 - scrollOffset * 1.8
-    camera.position.y = 1.2 + scrollOffset * 0.6
-    camera.lookAt(0, 0 + scrollOffset * 0.4, 0)
+    const targetX = -1.5 + mx * 1.0
+    const targetY =  3.2 - my * 0.4 + so * 0.8
+    const targetZ =  7.0 - so * 2.2
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetX, 0.055)
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.055)
+    camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.055)
+    camera.lookAt(2.0, 1.0 + so * 0.4, -2)
 
-    // Mouse parallax: bg moves least, fg moves most
     if (bgRef.current) {
-      bgRef.current.rotation.y = THREE.MathUtils.lerp(bgRef.current.rotation.y, mx * 0.04, 0.05)
-      bgRef.current.rotation.x = THREE.MathUtils.lerp(bgRef.current.rotation.x, -my * 0.02, 0.05)
+      bgRef.current.position.x = THREE.MathUtils.lerp(bgRef.current.position.x, mx * -0.18, 0.05)
+      bgRef.current.position.y = THREE.MathUtils.lerp(bgRef.current.position.y, my *  0.08, 0.05)
     }
     if (mgRef.current) {
-      mgRef.current.rotation.y = THREE.MathUtils.lerp(mgRef.current.rotation.y, mx * 0.09, 0.05)
-      mgRef.current.rotation.x = THREE.MathUtils.lerp(mgRef.current.rotation.x, -my * 0.04, 0.05)
+      mgRef.current.position.x = THREE.MathUtils.lerp(mgRef.current.position.x, mx * -0.55, 0.05)
+      mgRef.current.position.y = THREE.MathUtils.lerp(mgRef.current.position.y, my *  0.20, 0.05)
     }
     if (fgRef.current) {
-      fgRef.current.rotation.y = THREE.MathUtils.lerp(fgRef.current.rotation.y, mx * 0.15, 0.05)
-      fgRef.current.rotation.x = THREE.MathUtils.lerp(fgRef.current.rotation.x, -my * 0.06, 0.05)
+      fgRef.current.position.x = THREE.MathUtils.lerp(fgRef.current.position.x, mx * -1.10, 0.05)
+      fgRef.current.position.y = THREE.MathUtils.lerp(fgRef.current.position.y, my *  0.38, 0.05)
     }
   })
 
   return (
-    <group ref={sceneRef}>
-      {/* Background layer: sky + mountain */}
+    <>
       <group ref={bgRef}>
         <Sky />
         <Mountain />
       </group>
-      {/* Midground: forest */}
+
       <group ref={mgRef}>
-        <Forest />
+        <Trees />
+        <Boulders />
       </group>
-      {/* Foreground: ground + travelers */}
+
       <group ref={fgRef}>
-        <Ground />
+        <Terrain />
+        <Trail />
         <Travelers />
       </group>
-    </group>
+
+      <EffectComposer>
+        <Bloom luminanceThreshold={0.55} intensity={0.4} mipmapBlur />
+        <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+        <Vignette eskil={false} offset={0.28} darkness={0.52} />
+      </EffectComposer>
+    </>
   )
 }
 
+// ── Root export ───────────────────────────────────────────────────────────────
 export default function HeroScene() {
   const mouse = useRef<[number, number]>([0, 0])
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Normalize to -1..1
+    const onMove = (e: MouseEvent) => {
       mouse.current = [
-        (e.clientX / window.innerWidth) * 2 - 1,
+        (e.clientX / window.innerWidth)  * 2 - 1,
         (e.clientY / window.innerHeight) * 2 - 1,
       ]
     }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
   return (
-    <div className="fixed inset-0 -z-10">
+    <div style={{ position: 'fixed', inset: 0, zIndex: -10 }}>
       <Canvas
-        camera={{ position: [0, 1.2, 5.5], fov: 58 }}
-        gl={{ antialias: true }}
-        style={{ background: `linear-gradient(to bottom, ${SKY_TOP} 0%, ${SKY_HORIZON} 60%, ${GROUND_COLOR} 100%)` }}
+        camera={{ position: [-1.5, 3.2, 7.0], fov: 58 }}
+        gl={{ antialias: true, toneMappingExposure: 1.1 }}
+        style={{ background: SKY_HORIZON }}
       >
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 10, 3]} intensity={1.1} castShadow />
-        <directionalLight position={[-4, 6, -2]} intensity={0.3} color="#a8c8e8" />
+        {/* Warm golden-hour sun from the right */}
+        <directionalLight position={[8, 6, 2]}  intensity={2.2} color="#FFD580" />
+        {/* Soft warm fill from the left */}
+        <directionalLight position={[-4, 3, 4]} intensity={0.4} color="#C8A860" />
+        {/* Hemisphere: warm sky above, amber ground bounce */}
+        <hemisphereLight args={['#87BBFF', '#C8901A', 0.6]} />
 
-        <ScrollControls pages={3} damping={0.25}>
-          <ParallaxScene mouse={mouse} />
+        <ScrollControls pages={3} damping={0.28}>
+          <Suspense fallback={null}>
+            <SceneContents mouse={mouse} />
+          </Suspense>
         </ScrollControls>
       </Canvas>
     </div>

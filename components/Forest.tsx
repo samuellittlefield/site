@@ -8,22 +8,22 @@ function Tree({ position }: { position: [number, number, number] }) {
       {/* Trunk */}
       <mesh position={[0, 0.12, 0]}>
         <cylinderGeometry args={[0.025, 0.035, 0.24, 5]} />
-        <meshPhongMaterial color="#5c3d1e" flatShading />
+        <meshPhongMaterial color="#5c3d1e" />
       </mesh>
       {/* Bottom layer */}
       <mesh position={[0, 0.42, 0]}>
         <coneGeometry args={[0.28, 0.5, 6]} />
-        <meshPhongMaterial color="#1a3320" flatShading />
+        <meshPhongMaterial color="#1A4A18" />
       </mesh>
       {/* Mid layer */}
       <mesh position={[0, 0.72, 0]}>
         <coneGeometry args={[0.21, 0.44, 6]} />
-        <meshPhongMaterial color="#1e3d28" flatShading />
+        <meshPhongMaterial color="#206025" />
       </mesh>
       {/* Top layer */}
       <mesh position={[0, 0.98, 0]}>
         <coneGeometry args={[0.14, 0.38, 6]} />
-        <meshPhongMaterial color="#243d2a" flatShading />
+        <meshPhongMaterial color="#2A7530" />
       </mesh>
     </group>
   )
