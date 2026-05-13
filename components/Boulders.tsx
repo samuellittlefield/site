@@ -3,6 +3,7 @@
 import { useMemo, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { seededRng, smoothNoise } from '@/lib/noise'
+import { makeToonGradient } from '@/lib/toonGradient'
 import { MTN_POS, mountainWorldHeight } from './Mountain'
 
 interface BoulderSpec {
@@ -68,11 +69,11 @@ export default function Boulders() {
     return g
   }, [])
 
-  const mat = useMemo(() => new THREE.MeshPhongMaterial({
-    color: '#8A7A68',
-    
-    shininess: 3,
-  }), [])
+  const gradientMap = useMemo(() => makeToonGradient(), [])
+  const mat = useMemo(() => new THREE.MeshToonMaterial({
+    color: '#607090',   // blue-gray to match illustrated mountain palette
+    gradientMap,
+  }), [gradientMap])
 
   const meshRef = useRef<THREE.InstancedMesh>(null)
 

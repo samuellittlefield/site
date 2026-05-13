@@ -2,8 +2,8 @@
 
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { useLoader } from '@react-three/fiber'
 import { smoothNoise, fbm } from '@/lib/noise'
+import { makeToonGradient } from '@/lib/toonGradient'
 
 // Mountain sits at this world position — exported so Trees can use it
 export const MTN_POS: [number, number, number] = [14.0, -1.82, -13]
@@ -56,17 +56,17 @@ function buildMountainGeo(): THREE.BufferGeometry {
   const colorArr = new Float32Array(niPos.count * 3)
 
   const C = {
-    snow:        new THREE.Color('#F0EAE0'),
-    snowShad:    new THREE.Color('#C8C0D8'),  // purple-tinted shadow snow
-    upperRock:   new THREE.Color('#A890A0'),  // slight purple in upper rock
-    midRockWarm: new THREE.Color('#9A7858'),
-    midRockCool: new THREE.Color('#7A6070'),  // purple-cool shadow
-    lowerWarm:   new THREE.Color('#8A6848'),
-    lowerDark:   new THREE.Color('#5A3858'),  // deep purple-shadow base
-    earthWarm:   new THREE.Color('#7A8048'),
-    earthDark:   new THREE.Color('#485030'),
-    forest:      new THREE.Color('#3A7820'),  // richer green at base
-    forestDark:  new THREE.Color('#205818'),  // deep forest green
+    snow:        new THREE.Color('#DCE8F8'),  // icy blue-white peak
+    snowShad:    new THREE.Color('#98A8CC'),  // shadowed blue-gray
+    upperRock:   new THREE.Color('#6878B8'),  // illustrated blue-purple
+    midRockWarm: new THREE.Color('#5060A0'),  // mid blue
+    midRockCool: new THREE.Color('#344080'),  // deep indigo shadow
+    lowerWarm:   new THREE.Color('#485898'),  // lower blue slope
+    lowerDark:   new THREE.Color('#283060'),  // deep indigo base
+    earthWarm:   new THREE.Color('#405838'),  // transition to green
+    earthDark:   new THREE.Color('#2C3C28'),
+    forest:      new THREE.Color('#3A7028'),  // forest green at base
+    forestDark:  new THREE.Color('#1E4818'),
   }
 
   for (let i = 0; i < niPos.count; i += 3) {
@@ -128,33 +128,13 @@ function buildMountainGeo(): THREE.BufferGeometry {
 }
 
 export default function Mountain() {
-  const geo = useMemo(() => buildMountainGeo(), [])
-
-  const [rockDiff, rockNor, rockRough] = useLoader(THREE.TextureLoader, [
-    '/textures/rock_diff.jpg',
-    '/textures/rock_nor.jpg',
-    '/textures/rock_rough.jpg',
-  ])
-
-  useMemo(() => {
-    for (const tex of [rockDiff, rockNor, rockRough]) {
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
-      tex.repeat.set(6, 5)
-    }
-  }, [rockDiff, rockNor, rockRough])
+  const geo          = useMemo(() => buildMountainGeo(), [])
+  const gradientMap  = useMemo(() => makeToonGradient(), [])
 
   return (
     <group position={MTN_POS}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geo}>
-        <meshStandardMaterial
-          vertexColors
-          map={rockDiff}
-          normalMap={rockNor}
-          roughnessMap={rockRough}
-          roughness={1.0}
-          metalness={0.0}
-          normalScale={new THREE.Vector2(1.5, 1.5)}
-        />
+        <meshToonMaterial vertexColors gradientMap={gradientMap} />
       </mesh>
     </group>
   )

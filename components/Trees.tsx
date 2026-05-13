@@ -4,6 +4,7 @@ import { useMemo, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { seededRng } from '@/lib/noise'
 import { MTN_POS, mountainWorldHeight } from './Mountain'
+import { makeToonGradient } from '@/lib/toonGradient'
 
 // ── Shared geometry builders ──────────────────────────────────────────────────
 
@@ -131,10 +132,9 @@ function generateTrees(): TreeSpec[] {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-const TRUNK_COLOR  = new THREE.Color('#6A4020')
-const FOLIAGE_DARK = new THREE.Color('#254E1A')
-const FOLIAGE_MID  = new THREE.Color('#2D6820')
-const FOLIAGE_LITE = new THREE.Color('#3A7A25')
+const TRUNK_COLOR  = new THREE.Color('#5C3A18')
+const FOLIAGE_DARK = new THREE.Color('#1E5018')
+const FOLIAGE_MID  = new THREE.Color('#2A6820')
 
 export default function Trees() {
   const specs    = useMemo(() => generateTrees(), [])
@@ -147,13 +147,15 @@ export default function Trees() {
   const spruceRef = useRef<THREE.InstancedMesh>(null)
   const pineRef   = useRef<THREE.InstancedMesh>(null)
 
-  const spruceMat = useMemo(() => new THREE.MeshStandardMaterial({
-    color: FOLIAGE_DARK, roughness: 0.95, metalness: 0,
-  }), [])
+  const gradientMap = useMemo(() => makeToonGradient(), [])
 
-  const pineMat = useMemo(() => new THREE.MeshStandardMaterial({
-    color: FOLIAGE_MID, roughness: 0.95, metalness: 0,
-  }), [])
+  const spruceMat = useMemo(() => new THREE.MeshToonMaterial({
+    color: FOLIAGE_DARK, gradientMap,
+  }), [gradientMap])
+
+  const pineMat = useMemo(() => new THREE.MeshToonMaterial({
+    color: FOLIAGE_MID, gradientMap,
+  }), [gradientMap])
 
   useEffect(() => {
     const dummy = new THREE.Object3D()

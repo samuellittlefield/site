@@ -2,8 +2,8 @@
 
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { useLoader } from '@react-three/fiber'
 import { smoothNoise, fbm } from '@/lib/noise'
+import { makeToonGradient } from '@/lib/toonGradient'
 
 // Second peak — positioned left-of-center, further back, slightly shorter
 export const MTN2_POS: [number, number, number] = [2.0, -1.82, -18]
@@ -42,15 +42,15 @@ function buildMtn2Geo(): THREE.BufferGeometry {
   const colorArr = new Float32Array(niPos.count * 3)
 
   const C = {
-    snow:      new THREE.Color('#E8E0F0'),
-    snowShad:  new THREE.Color('#B8A8D0'),
-    upper:     new THREE.Color('#8878A0'),
-    midCool:   new THREE.Color('#706080'),
-    midWarm:   new THREE.Color('#806870'),
-    lower:     new THREE.Color('#605870'),
-    earth:     new THREE.Color('#506040'),
-    forest:    new THREE.Color('#2A6818'),
-    forestDk:  new THREE.Color('#184A10'),
+    snow:      new THREE.Color('#C8D8F0'),  // lighter blue — further peak reads softer
+    snowShad:  new THREE.Color('#8898C0'),
+    upper:     new THREE.Color('#5068A8'),
+    midCool:   new THREE.Color('#384888'),
+    midWarm:   new THREE.Color('#485898'),
+    lower:     new THREE.Color('#2C3870'),
+    earth:     new THREE.Color('#384830'),
+    forest:    new THREE.Color('#2A6020'),
+    forestDk:  new THREE.Color('#184010'),
   }
 
   for (let i = 0; i < niPos.count; i += 3) {
@@ -82,33 +82,13 @@ function buildMtn2Geo(): THREE.BufferGeometry {
 }
 
 export default function Mountain2() {
-  const geo = useMemo(() => buildMtn2Geo(), [])
-
-  const [rockDiff, rockNor, rockRough] = useLoader(THREE.TextureLoader, [
-    '/textures/rock_diff.jpg',
-    '/textures/rock_nor.jpg',
-    '/textures/rock_rough.jpg',
-  ])
-
-  useMemo(() => {
-    for (const tex of [rockDiff, rockNor, rockRough]) {
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
-      tex.repeat.set(5, 4)
-    }
-  }, [rockDiff, rockNor, rockRough])
+  const geo         = useMemo(() => buildMtn2Geo(), [])
+  const gradientMap = useMemo(() => makeToonGradient(), [])
 
   return (
     <group position={MTN2_POS}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geo}>
-        <meshStandardMaterial
-          vertexColors
-          map={rockDiff}
-          normalMap={rockNor}
-          roughnessMap={rockRough}
-          roughness={1.0}
-          metalness={0.0}
-          normalScale={new THREE.Vector2(1.2, 1.2)}
-        />
+        <meshToonMaterial vertexColors gradientMap={gradientMap} />
       </mesh>
     </group>
   )

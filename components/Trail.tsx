@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { useLoader } from '@react-three/fiber'
+import { makeToonGradient } from '@/lib/toonGradient'
 
 // Trail curve — exported so Travelers can follow it
 export const TRAIL_CURVE = new THREE.CatmullRomCurve3([
@@ -59,29 +59,12 @@ function buildTrailGeo(curve: THREE.CatmullRomCurve3, width: number, segments: n
 }
 
 export default function Trail() {
-  const geo = useMemo(() => buildTrailGeo(TRAIL_CURVE, 0.38, 80), [])
-  const [dirtDiff, dirtNor, dirtRough] = useLoader(THREE.TextureLoader, [
-    '/textures/dirt_diff.jpg',
-    '/textures/dirt_nor.jpg',
-    '/textures/dirt_rough.jpg',
-  ])
-
-  useMemo(() => {
-    for (const tex of [dirtDiff, dirtNor, dirtRough]) {
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
-      tex.repeat.set(2, 12)
-    }
-  }, [dirtDiff, dirtNor, dirtRough])
+  const geo         = useMemo(() => buildTrailGeo(TRAIL_CURVE, 0.38, 80), [])
+  const gradientMap = useMemo(() => makeToonGradient(), [])
 
   return (
     <mesh geometry={geo}>
-      <meshStandardMaterial
-        map={dirtDiff}
-        normalMap={dirtNor}
-        roughnessMap={dirtRough}
-        roughness={1.0}
-        metalness={0.0}
-      />
+      <meshToonMaterial color="#C8A86A" gradientMap={gradientMap} />
     </mesh>
   )
 }

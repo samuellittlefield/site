@@ -8,6 +8,8 @@ import { ToneMappingMode } from 'postprocessing'
 import * as THREE from 'three'
 import Mountain from './Mountain'
 import Cabin from './Cabin'
+import Clouds from './Clouds'
+import Birds from './Birds'
 import Mountain2 from './Mountain2'
 import Moon from './Moon'
 import Planet from './Planet'
@@ -18,10 +20,10 @@ import Boulders from './Boulders'
 import Trail from './Trail'
 import Travelers from './Travelers'
 
-const SKY_DEEP    = '#1A0A4E'   // deep indigo-purple
-const SKY_MID     = '#4A3A8C'   // purple-blue mid
-const SKY_HORIZON = '#C878A0'   // warm rose-purple horizon
-const FOG_COLOR   = '#C0A8C8'   // soft purple-gray fog
+const SKY_DEEP    = '#8AB8D8'   // illustrated soft blue (top)
+const SKY_MID     = '#C0D8E8'   // pale sky mid
+const SKY_HORIZON = '#F0C8A8'   // warm peach horizon — like the reference
+const FOG_COLOR   = '#D8C8E0'   // soft lavender-cream fog
 
 // ── Sky backdrop with warm gradient ──────────────────────────────────────────
 function Sky() {
@@ -97,6 +99,8 @@ function SceneContents({ mouse }: { mouse: React.MutableRefObject<[number, numbe
     <>
       <group ref={bgRef}>
         <Sky />
+        <Clouds />
+        <Birds />
         <Moon />
         <Planet />
         <Mountain />
@@ -145,14 +149,14 @@ export default function HeroScene() {
       <Canvas
         camera={{ position: [-1.5, 3.2, 7.0], fov: 58 }}
         gl={{ antialias: true, toneMappingExposure: 1.1 }}
-        style={{ background: '#C878A0' }}
+        style={{ background: '#F0C8A8' }}
       >
-        {/* Warm golden-hour sun from the right */}
-        <directionalLight position={[8, 6, 2]}  intensity={2.2} color="#FFD580" />
-        {/* Soft warm fill from the left */}
-        <directionalLight position={[-4, 3, 4]} intensity={0.4} color="#C8A860" />
-        {/* Hemisphere: warm sky above, amber ground bounce */}
-        <hemisphereLight args={['#87BBFF', '#C8901A', 0.6]} />
+        {/* Primary sun — needed for toon banding */}
+        <directionalLight position={[6, 10, 4]} intensity={2.8} color="#FFF0E0" />
+        {/* Soft fill from opposite side */}
+        <directionalLight position={[-5, 4, 3]} intensity={0.6} color="#C0D8F0" />
+        {/* Gentle ambient so shadow sides aren't pure black */}
+        <ambientLight intensity={0.55} color="#D0C8E8" />
 
         <ScrollControls pages={3} damping={0.28}>
           <Suspense fallback={null}>
