@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/circlesnap/:path*",
+      "destination": "https://sandbox-lyart-rho.vercel.app/:path*"
+    }
+  ]
+}
