@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
+      "source": "/circlesnap",
+      "destination": "https://sandbox-lyart-rho.vercel.app/circlesnap"
+    },
+    {
       "source": "/circlesnap/:path*",
-      "destination": "https://sandbox-lyart-rho.vercel.app/:path*"
+      "destination": "https://sandbox-lyart-rho.vercel.app/circlesnap/:path*"
     }
   ]
 }
