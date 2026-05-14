@@ -103,10 +103,36 @@ export default function Home() {
 
         {/* ── Projects ───────────────────────────────────── */}
         <section id="projects" className="bg-slate-50/95 backdrop-blur-md">
-          <div className="max-w-3xl mx-auto px-10 py-24 min-h-[50vh]">
+          <div className="max-w-3xl mx-auto px-10 py-24">
             <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">Projects</p>
-            <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-8">Things I&apos;ve built</h2>
-            <p className="text-slate-400 font-light">Coming soon.</p>
+            <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-12">Things I&apos;ve built</h2>
+
+            <a
+              href="/circlesnap"
+              className="group block border border-slate-200 rounded-2xl p-8 hover:border-purple-200 hover:bg-white transition-all duration-200"
+            >
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <p className="text-xs tracking-[0.2em] uppercase text-purple-400 mb-2 font-light">WIP</p>
+                  <h3 className="text-xl font-light text-slate-800 group-hover:text-purple-700 transition-colors duration-200">
+                    CircleSnap
+                  </h3>
+                </div>
+                <svg className="w-5 h-5 text-slate-300 group-hover:text-purple-400 transition-colors duration-200 mt-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </div>
+              <p className="text-slate-500 font-light text-sm leading-relaxed mb-6">
+                A timeline-based social app for recording and sharing events — hikes, shows, trips, anything worth remembering. Invite-only, photo-first.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {['Next.js', 'PostgreSQL', 'Prisma', 'Vercel Blob'].map(tag => (
+                  <span key={tag} className="text-[11px] tracking-wide text-purple-400 border border-purple-100 rounded-full px-3 py-1 font-light">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </a>
           </div>
         </section>
 
