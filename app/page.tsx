@@ -107,6 +107,7 @@ export default function Home() {
             <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">Projects</p>
             <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-12">Things I&apos;ve built</h2>
 
+            <div className="flex flex-col gap-4">
             <a
               href="/circlesnap"
               className="group block border border-slate-200 rounded-2xl p-8 hover:border-purple-200 hover:bg-white transition-all duration-200"
@@ -133,6 +134,36 @@ export default function Home() {
                 ))}
               </div>
             </a>
+
+            <a
+              href="https://news-site-aggregator.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block border border-slate-200 rounded-2xl p-8 hover:border-purple-200 hover:bg-white transition-all duration-200"
+            >
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <p className="text-xs tracking-[0.2em] uppercase text-purple-400 mb-2 font-light">Live</p>
+                  <h3 className="text-xl font-light text-slate-800 group-hover:text-purple-700 transition-colors duration-200">
+                    Situation Monitor
+                  </h3>
+                </div>
+                <svg className="w-5 h-5 text-slate-300 group-hover:text-purple-400 transition-colors duration-200 mt-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </div>
+              <p className="text-slate-500 font-light text-sm leading-relaxed mb-6">
+                A real-time dashboard surfacing what&apos;s happening right now — trending topics, weather, politics, astronomy, and internet service health. Pulls from Google Trends, Wikipedia velocity, Reddit, and more, enriched with AI summaries.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {['FastAPI', 'React', 'PostgreSQL', 'APScheduler', 'Groq'].map(tag => (
+                  <span key={tag} className="text-[11px] tracking-wide text-purple-400 border border-purple-100 rounded-full px-3 py-1 font-light">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </a>
+            </div>
           </div>
         </section>
 
