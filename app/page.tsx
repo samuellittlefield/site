@@ -1,191 +1,170 @@
-import HeroSceneLoader from '@/components/HeroSceneLoader'
-import Nav from '@/components/Nav'
-
-const inspirations = [
-  {
-    label: 'Nietzsche, Camus, Sartre',
-    note: 'The examined life. Absurdity as starting point, not destination.',
-  },
-  {
-    label: 'Music',
-    note: 'The one language that bypasses the filter.',
-  },
-  {
-    label: 'Books',
-    note: 'Other people\'s inner lives, made portable.',
-  },
-  {
-    label: 'Art',
-    note: 'What gets said when words aren\'t enough.',
-  },
-  {
-    label: 'Hikes',
-    note: 'Where most of the good thinking happens.',
-  },
-]
+import Link from 'next/link'
+import Masthead from '@/components/Masthead'
+import Plate from '@/components/Plate'
+import { projects } from '@/lib/projects'
 
 export default function Home() {
+  const [lead, ...rest] = projects
+
   return (
-    <main>
-      <HeroSceneLoader />
-      <Nav />
+    <div className="wrap">
+      <Masthead left="Vol. I · 2026 · Richmond, California" right="Public data · Energy · Civic information" />
 
-      <div className="relative z-10 mt-[100vh]">
-
-        {/* ── About ──────────────────────────────────────── */}
-        <section id="about" className="bg-white/95 backdrop-blur-md">
-          <div className="max-w-3xl mx-auto px-10 py-24">
-
-            {/* Header */}
-            <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">
-              About
-            </p>
-            <h1 className="text-4xl font-extralight tracking-tight text-slate-800 mb-12 leading-snug">
-              Bay Area Dad&nbsp;/ Cyclist&nbsp;/ Hiker&nbsp;/<br />
-              Product Manager&nbsp;/ Musician
+      <main>
+        <section className="intro" aria-label="Introduction">
+          <div>
+            <h1 className="display">
+              I build small, careful tools out of <em>public data.</em>
             </h1>
-
-            {/* Bio */}
-            <p className="text-slate-600 leading-relaxed text-lg font-light mb-14 max-w-2xl">
-              I&apos;m Samuel. This space is a collection of artifacts that resonate
-              with me. From hiking routes I&apos;ve enjoyed to Arduino weather stations
-              I&apos;ve built. Let&apos;s build something together.
+            <p className="lede">
+              Product manager. Recent work covers federal energy permitting, residential electricity rates and
+              election polling. Each project says what its numbers are and where they came from.
             </p>
+          </div>
+          <nav className="toc" aria-label="Contents">
+            <p className="label" style={{ margin: 0 }}>
+              Contents
+            </p>
+            <ol>
+              {projects.map((p) => (
+                <li key={p.slug}>
+                  <span className="mono accent" style={{ fontSize: 12 }}>
+                    {p.no}
+                  </span>
+                  <Link href={`/work/${p.slug}`}>{p.title}</Link>
+                  <span className="leader" aria-hidden="true" />
+                  <span className="label" style={{ letterSpacing: '0.04em', textTransform: 'none' }}>
+                    {p.field}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </section>
 
-            {/* Photo placeholder */}
-            <div className="mb-16">
-              <div
-                className="w-full rounded-2xl overflow-hidden bg-gradient-to-br from-purple-50 to-slate-100 flex items-center justify-center"
-                style={{ aspectRatio: '16/7' }}
-              >
-                <div className="text-center">
-                  <div className="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-7 h-7 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <p className="text-slate-400 text-sm font-light">Photo coming soon</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Core Inspirations */}
+        <section id="work" className="section" aria-labelledby="lead-title">
+          <p className="label" style={{ margin: '0 0 40px' }}>
+            <span className="no">No. {lead.no}</span> · Lead project · Federal permitting · {lead.year}
+          </p>
+          <div className="feature">
             <div>
-              <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-8 font-light">
-                Core Inspiration
-              </p>
-              <ol className="space-y-0">
-                {inspirations.map(({ label, note }, i) => (
-                  <li
-                    key={label}
-                    className="flex gap-6 py-5 border-t border-slate-100 group"
-                  >
-                    <span className="text-[11px] text-purple-300 font-light mt-1 w-4 shrink-0">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <p className="text-slate-800 font-light text-base mb-0.5 group-hover:text-purple-700 transition-colors duration-200">
-                        {label}
-                      </p>
-                      <p className="text-slate-400 text-sm font-light leading-relaxed">
-                        {note}
-                      </p>
-                    </div>
-                  </li>
+              <h2 id="lead-title" className="h-feature">
+                <Link href={`/work/${lead.slug}`} style={{ textDecoration: 'none' }}>
+                  {lead.title}
+                </Link>
+              </h2>
+              <p className="deck">{lead.summary}</p>
+              <figure className="stat">
+                <div className="stat-row">
+                  <span className="stat-num">36%</span>
+                  <span className="mono" style={{ fontSize: 20, color: 'var(--muted)' }}>
+                    to
+                  </span>
+                  <span className="stat-num accent">12%</span>
+                </div>
+                <figcaption>
+                  Share of BLM solar right-of-way applications decided within 12 months: filed 2016 to 2020, versus
+                  filed 2021 to 2025.
+                </figcaption>
+              </figure>
+              <div className="links" style={{ marginTop: 32 }}>
+                {lead.links.map((l) => (
+                  <a key={l.href} href={l.href}>
+                    {l.label} ↗
+                  </a>
                 ))}
-                <li className="border-t border-slate-100" />
-              </ol>
+                <Link href={`/work/${lead.slug}`}>Read the case study →</Link>
+              </div>
             </div>
-
+            {lead.image && <Plate {...lead.image} numeral="I" priority />}
           </div>
         </section>
 
-        {/* ── Projects ───────────────────────────────────── */}
-        <section id="projects" className="bg-slate-50/95 backdrop-blur-md">
-          <div className="max-w-3xl mx-auto px-10 py-24">
-            <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">Projects</p>
-            <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-12">Things I&apos;ve built</h2>
-
-            <div className="flex flex-col gap-4">
-            <a
-              href="/circlesnap"
-              className="group block border border-slate-200 rounded-2xl p-8 hover:border-purple-200 hover:bg-white transition-all duration-200"
-            >
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div>
-                  <p className="text-xs tracking-[0.2em] uppercase text-purple-400 mb-2 font-light">WIP</p>
-                  <h3 className="text-xl font-light text-slate-800 group-hover:text-purple-700 transition-colors duration-200">
-                    CircleSnap
-                  </h3>
+        <section className="section" aria-labelledby="work-title">
+          <div className="section-head">
+            <h2 id="work-title" className="label" style={{ margin: 0 }}>
+              Selected work
+            </h2>
+            <span className="label">
+              Nos. {rest[0].no} to {rest[rest.length - 1].no}
+            </span>
+          </div>
+          <div className="work-grid">
+            {rest.map((p) => (
+              <article key={p.slug} className="work">
+                {p.image ? (
+                  <Link href={`/work/${p.slug}`} aria-hidden="true" tabIndex={-1}>
+                    <Plate src={p.image.src} alt="" />
+                  </Link>
+                ) : (
+                  <div className="plate-text">
+                    <p className="label">Internal tool · No public build</p>
+                    <p className="plate-quote">One shared record of a project, handed straight to engineering.</p>
+                  </div>
+                )}
+                <p className="label">
+                  <span className="no">No. {p.no}</span> · {p.field} · {p.year}
+                </p>
+                <h3>
+                  <Link href={`/work/${p.slug}`}>{p.title}</Link>
+                </h3>
+                <p className="body">{p.summary}</p>
+                <p className="stack">{p.stack}</p>
+                <div className="links">
+                  {p.links.map((l) => (
+                    <a key={l.href} href={l.href}>
+                      {l.label} ↗
+                    </a>
+                  ))}
+                  <Link href={`/work/${p.slug}`}>Case study →</Link>
                 </div>
-                <svg className="w-5 h-5 text-slate-300 group-hover:text-purple-400 transition-colors duration-200 mt-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-              </div>
-              <p className="text-slate-500 font-light text-sm leading-relaxed mb-6">
-                A timeline-based social app for recording and sharing events — hikes, shows, trips, anything worth remembering. Invite-only, photo-first.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['Next.js', 'PostgreSQL', 'Prisma', 'Vercel Blob'].map(tag => (
-                  <span key={tag} className="text-[11px] tracking-wide text-purple-400 border border-purple-100 rounded-full px-3 py-1 font-light">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </a>
+              </article>
+            ))}
+          </div>
+        </section>
 
-            <a
-              href="https://news-site-aggregator.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border border-slate-200 rounded-2xl p-8 hover:border-purple-200 hover:bg-white transition-all duration-200"
-            >
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div>
-                  <p className="text-xs tracking-[0.2em] uppercase text-purple-400 mb-2 font-light">Live</p>
-                  <h3 className="text-xl font-light text-slate-800 group-hover:text-purple-700 transition-colors duration-200">
-                    Situation Monitor
-                  </h3>
-                </div>
-                <svg className="w-5 h-5 text-slate-300 group-hover:text-purple-400 transition-colors duration-200 mt-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-              </div>
-              <p className="text-slate-500 font-light text-sm leading-relaxed mb-6">
-                A real-time dashboard surfacing what&apos;s happening right now — trending topics, weather, politics, astronomy, and internet service health. Pulls from Google Trends, Wikipedia velocity, Reddit, and more, enriched with AI summaries.
+        <section className="section" style={{ borderTopColor: 'var(--rule)', paddingBottom: 88 }} aria-labelledby="progress-title">
+          <div className="row">
+            <h2 id="progress-title" className="label" style={{ margin: 0 }}>
+              In progress
+            </h2>
+            <div className="span-2">
+              <p style={{ margin: 0, fontSize: 30, lineHeight: 1.2 }}>True Grade</p>
+              <p className="body" style={{ margin: '8px 0 0', maxWidth: '36rem' }}>
+                Bike route sheets you can read at a glance: the map, the climbs, and where to find water and
+                bathrooms along the way.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {['FastAPI', 'React', 'PostgreSQL', 'APScheduler', 'Groq'].map(tag => (
-                  <span key={tag} className="text-[11px] tracking-wide text-purple-400 border border-purple-100 rounded-full px-3 py-1 font-light">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </a>
             </div>
           </div>
         </section>
 
-        {/* ── Blog ───────────────────────────────────────── */}
-        <section id="blog" className="bg-white/95 backdrop-blur-md">
-          <div className="max-w-3xl mx-auto px-10 py-24 min-h-[50vh]">
-            <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">Blog</p>
-            <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-8">Thoughts</h2>
-            <p className="text-slate-400 font-light">Coming soon.</p>
+        <section id="about" className="section" aria-labelledby="about-title">
+          <h2 id="about-title" className="label" style={{ margin: '0 0 40px' }}>
+            About
+          </h2>
+          <div className="about-grid">
+            <p className="about-text">
+              Product manager in Richmond, California, with a degree in English. I run complex projects from first
+              conversation to shipped product, and keep them tied to what real users need.
+            </p>
+            <dl className="contact">
+              <dt className="label">GitHub</dt>
+              <dd>
+                <a href="https://github.com/samuellittlefield">samuellittlefield</a>
+              </dd>
+              <dt className="label">LinkedIn</dt>
+              <dd>
+                <a href="https://www.linkedin.com/in/samuellittlefield/">samuellittlefield</a>
+              </dd>
+            </dl>
           </div>
         </section>
+      </main>
 
-        {/* ── Professional ───────────────────────────────── */}
-        <section id="professional" className="bg-slate-50/95 backdrop-blur-md">
-          <div className="max-w-3xl mx-auto px-10 py-24 min-h-[50vh]">
-            <p className="text-xs tracking-[0.25em] uppercase text-purple-400 mb-3 font-light">Professional</p>
-            <h2 className="text-3xl font-extralight tracking-tight text-slate-800 mb-8">Work</h2>
-            <p className="text-slate-400 font-light">Coming soon.</p>
-          </div>
-        </section>
-
-      </div>
-    </main>
+      <footer className="footer">
+        <span>Set in Newsreader and IBM Plex Mono.</span>
+        <span>© 2026 Samuel Littlefield</span>
+      </footer>
+    </div>
   )
 }
