@@ -157,6 +157,7 @@ a:hover { color: var(--accent); }
 .table th[scope="row"] { font-weight: 400; text-align: left; padding-left: 0; }
 .table td:last-child, .table th[scope="col"]:last-child { padding-right: 0; }
 .table tbody tr:last-child td, .table tbody tr:last-child th { border-bottom-color: var(--ink); }
+.table.left td, .table.left th[scope="col"] { text-align: left; }
 .table .em { color: var(--accent); font-weight: 600; }
 
 .next { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px; padding: 32px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); margin-bottom: 40px; text-decoration: none; }

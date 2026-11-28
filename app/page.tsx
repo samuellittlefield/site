@@ -44,7 +44,7 @@ export default function Home() {
 
         <section id="work" className="section" aria-labelledby="lead-title">
           <p className="label" style={{ margin: '0 0 40px' }}>
-            <span className="no">No. {lead.no}</span> · Lead project · Federal permitting · {lead.year}
+            <span className="no">No. {lead.no}</span> · Lead project · Permitting and the grid · {lead.year}
           </p>
           <div className="feature">
             <div>

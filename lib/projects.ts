@@ -14,6 +14,7 @@ export type Block =
   | {
       type: 'table'
       caption: string
+      align?: 'left'
       head: string[]
       rows: { cells: string[]; emphasis?: number[] }[]
     }
@@ -41,17 +42,6 @@ export type Project = {
   sections: Section[]
 }
 
-const WHAT_I_LEARNED: Section = {
-  id: 'learned',
-  title: 'What I learned',
-  blocks: [
-    {
-      type: 'placeholder',
-      text: '[IN YOUR WORDS: two or three things you learned building it, about the data, the domain, or how you made product calls. Then one line on what you would build next.]',
-    },
-  ],
-}
-
 export const projects: Project[] = [
   {
     slug: 'almanac-grid',
@@ -60,21 +50,21 @@ export const projects: Project[] = [
     field: 'Energy',
     year: '2026',
     summary:
-      'A free tracker of federal permitting outcomes, built from public agency records. It starts with how long the Bureau of Land Management takes to decide on solar, wind and transmission applications.',
-    deck: 'How long does the federal government take to decide on energy projects on public land? A free tracker built from Bureau of Land Management case records.',
+      'A free tracker of the path a proposed power plant takes in five Southwest states: how long federal land permits take, and how far grid-connection requests get. Built to measure what BAAJA, the permitting bill, changes.',
+    deck: 'What stands between a proposed power plant and a built one? A public record of two of those gates, land permits and grid connections, in five Southwest states.',
     stack: 'Python · FastAPI · PostgreSQL',
     meta: [
       { label: 'Role', value: 'Solo project' },
       { label: 'Year', value: '2026' },
-      { label: 'Source', value: 'BLM case records' },
+      { label: 'Sources', value: 'BLM case records, LBNL queue data' },
       { label: 'Built with', value: 'Python, FastAPI, PostgreSQL' },
       { label: 'Status', value: 'Live ↗', href: 'https://almanac.samuellittlefield.com/' },
     ],
     links: [{ label: 'Visit the site', href: 'https://almanac.samuellittlefield.com/' }],
     image: {
       src: '/work/almanac-grid.jpg',
-      alt: 'Almanac Grid page on how long BLM takes to decide solar right-of-way applications',
-      caption: 'The BLM solar page, data as of November 17, 2026.',
+      alt: 'Almanac Grid overview page showing the four gates a proposed power plant has to clear',
+      caption: 'The overview page: the path to power, gate by gate.',
     },
     sections: [
       {
@@ -87,7 +77,58 @@ export const projects: Project[] = [
           },
           { type: 'p', text: 'Developers and litigators look like its first real readers.' },
         ],
-        note: 'Covers BLM rights-of-way for solar, wind, transmission and pipelines, plus geothermal leases.',
+        note: 'Covers Arizona, Colorado, Nevada, New Mexico and Utah.',
+      },
+      {
+        id: 'gates',
+        title: 'Four gates',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A proposed power plant has to clear four gates at the same time before it runs, and it can fail at any of them. Almanac Grid measures the first two and maps who plans the third, so that whatever BAAJA changes can be measured against how things work today.',
+          },
+          {
+            type: 'table',
+            align: 'left',
+            caption: 'Table 1. The path to power, and the BAAJA sections that would change each gate.',
+            head: ['Gate', 'Almanac Grid', 'BAAJA'],
+            rows: [
+              { cells: ['1. Land permit', 'Measures BLM decisions', '§1402 deadlines'] },
+              { cells: ['2. Grid connection', 'Measures the queue', '§2106, §2110, §2111'] },
+              { cells: ['3. New lines', 'Maps the planners', '§225 joint planning'] },
+              { cells: ['4. Buyer and financing', 'Not measured', 'None'] },
+            ],
+          },
+        ],
+        note: 'The site leads with this diagram: a project moves from proposed to built only when all four gates are open.',
+      },
+      {
+        id: 'decisions',
+        title: 'Decisions that shaped it',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              {
+                lead: 'The bill is framing, not the foundation.',
+                text: "BAAJA isn't law, so the dataset has to be useful on its own. The bill is the sharpest reason someone would want it.",
+              },
+              {
+                lead: 'Check the data exists before scoping.',
+                text: 'FERC and BLM records are reachable. Army Corps wetlands permits are mostly behind FOIA, so they wait until there is demand worth that wait.',
+              },
+              {
+                lead: "A data model that isn't shaped like one agency.",
+                text: "Each project can carry many agency actions, so a pipeline's FERC certificate and its BLM right-of-way attach to the same project. That is what makes total time-to-permit across agencies measurable.",
+              },
+              {
+                lead: 'Stay out of crowded markets.',
+                text: 'Geospatial siting tools already have incumbents, so they are out of scope.',
+              },
+            ],
+          },
+        ],
+        note: 'Every number on the site traces back to a frozen, checksummed snapshot of the data.',
       },
       {
         id: 'records',
@@ -95,7 +136,7 @@ export const projects: Project[] = [
         blocks: [
           {
             type: 'p',
-            text: 'Public agency data has gaps, and an honest tracker says so up front. The site opens with four caveats before it shows a single chart.',
+            text: 'Public agency data has gaps, and an honest tracker says so up front. The Solar page opens with four caveats before it shows a single chart.',
           },
           {
             type: 'list',
@@ -151,13 +192,17 @@ export const projects: Project[] = [
           },
           {
             type: 'table',
-            caption: 'Table 1. Status of solar applications 36 months after filing.',
+            caption: 'Table 2. Status of solar applications 36 months after filing.',
             head: ['Filed', 'Granted', 'Rejected', 'Withdrawn', 'Still pending'],
             rows: [
               { cells: ['2016–19', '10%', '21%', '30%', '37%'] },
               { cells: ['2020–22', '9%', '3%', '15%', '63%'], emphasis: [2, 4] },
               { cells: ['2023', '6%', '10%', '18%', '66%'] },
             ],
+          },
+          {
+            type: 'p',
+            text: 'The grid-connection gate is narrower still. At the end of 2025, the five states had 918 active grid-connection requests for 260 GW, and 21% of that capacity had a signed interconnection agreement. Of the capacity requested from 2000 to 2020, only 8.3% was built by the end of 2025, against 12.8% nationally.',
           },
         ],
         note: 'On November 17, 2026, 92% of open solar applications were more than 60 days past deadline, against a 67% baseline for the previous five years.',
@@ -168,12 +213,25 @@ export const projects: Project[] = [
         blocks: [
           {
             type: 'p',
-            text: "Section 1402 of BAAJA, which passed the Senate on November 19, 2026, would hold agencies to permitting deadlines by comparing each year's overdue share against earlier years. It is not law. Almanac Grid applies the bill's test to past years so readers can see where BLM would stand, and says plainly that these figures are not a finding under it.",
+            text: "BAAJA passed the Senate on November 19, 2026, 62 to 33. The House has not voted on it, and it is not law. Section 1402 would set deadlines for federal permit decisions and let developers sue over a pattern of missed deadlines. Almanac Grid applies that test to BLM's past solar decisions, and says plainly that these figures are not a finding under the bill.",
           },
         ],
-        note: 'Passed as an amendment to H.R. 2347.',
+        note: 'Passed as Senate Amendment 6883 to H.R. 2347. Status checked November 27, 2026.',
       },
-      WHAT_I_LEARNED,
+      {
+        id: 'learned',
+        title: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: "What I'm still working out is how the pace of past decisions will shape the pace of future ones. Solar, the case I analyzed most closely, shows the problem: BLM isn't turning more projects down, it's leaving them undecided. For solar applications filed in 2020–22, the share rejected within three years fell to 3% from 21%, while the share still pending rose to 63% from 37%.",
+          },
+          {
+            type: 'p',
+            text: 'BAAJA’s deadlines are meant to shrink that purgatory, and most of their effect will likely show up in court, in how projects get litigated. How much the new rules actually change outcomes is still an open question, and answering it is what Almanac Grid is built for.',
+          },
+        ],
+      },
     ],
   },
   {
@@ -183,14 +241,14 @@ export const projects: Project[] = [
     field: 'Energy',
     year: '2026',
     summary:
-      "Prices one household's hourly usage under four PG&E residential plans, splits delivery from community choice generation charges, and checks the model against 20 real bills.",
-    deck: "What would one household's electricity actually cost on each PG&E plan? A rate model built on real hourly usage, with every rate cited.",
-    stack: 'Python · pandas · Green Button data',
+      "Prices a household's hourly usage under each PG&E residential plan, splits delivery from community choice generation charges, and checks the model against real bills. It now runs entirely in the browser, so a household's data never leaves its device.",
+    deck: "What would one household's electricity actually cost on each PG&E plan? A rate model built on real hourly usage, with every rate cited, that now runs in the browser on anyone's own file.",
+    stack: 'Python · pandas · Pyodide',
     meta: [
       { label: 'Role', value: 'Solo project' },
       { label: 'Year', value: '2026' },
       { label: 'Source', value: 'Green Button usage, PG&E and MCE tariffs' },
-      { label: 'Built with', value: 'Python, pandas' },
+      { label: 'Built with', value: 'Python, pandas, Pyodide' },
       { label: 'Status', value: 'Sample report ↗', href: 'https://pge.samuellittlefield.com/' },
     ],
     links: [{ label: 'Sample report', href: 'https://pge.samuellittlefield.com/' }],
@@ -231,8 +289,12 @@ export const projects: Project[] = [
                 text: 'Reconciles the model against 20 real bills before trusting it.',
               },
               {
-                lead: 'Share.',
-                text: 'Real usage never leaves my machine. The public report runs on a synthetic household built from NREL ResStock data.',
+                lead: 'Ask what-ifs.',
+                text: 'Balcony solar scenarios, and whether to stay with MCE or return to PG&E for generation.',
+              },
+              {
+                lead: 'Run it on your own file.',
+                text: "The same Python engine runs in a web page through Pyodide. Drop in a Green Button export and the report is computed in that browser tab. The file is never uploaded, and the public sample runs on a synthetic household built from NREL ResStock data.",
               },
             ],
           },
@@ -278,7 +340,20 @@ export const projects: Project[] = [
           },
         ],
       },
-      WHAT_I_LEARNED,
+      {
+        id: 'learned',
+        title: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The biggest surprise was who supplies my power. Most of the electricity I use comes from MCE, a provider that barely comes up when people complain about PG&E. I have no case against MCE. What surprised me is that a system can be built so the customer never sees who is behind most of their power.',
+          },
+          {
+            type: 'p',
+            text: "Letting other households run the same analysis came next, and it now works: the engine runs on their own file without it leaving their device. Opening it to the public and widening it across PG&E's territory are the next steps. I'm also testing a theory about balcony solar. Credits for power sent back to the grid have fallen so far that it may make more sense to offset what you use than to export a surplus. A small, cheap panel aimed at one appliance could beat rooftop solar and the loan that often comes with it.",
+          },
+        ],
+      },
     ],
   },
   {
@@ -358,7 +433,20 @@ export const projects: Project[] = [
         ],
         note: 'The model card now warns readers whenever it falls back to the 2024 baseline.',
       },
-      WHAT_I_LEARNED,
+      {
+        id: 'learned',
+        title: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The July bug taught me the most. My model gave Democrats a 36% chance of winning the House while prediction markets said 83%, and nothing on the page explained the gap. The model had quietly fallen back to 2024 data. The fix was technical, but the lesson was about trust: when a number can come from more than one place, the reader needs to see which one they are looking at. The same idea runs through the labels on every figure in my PG&E tool.',
+          },
+          {
+            type: 'p',
+            text: 'With the midterms over, the natural next step is to score the polling averages against the results.',
+          },
+        ],
+      },
     ],
   },
   {
@@ -443,7 +531,20 @@ export const projects: Project[] = [
           },
         ],
       },
-      WHAT_I_LEARNED,
+      {
+        id: 'learned',
+        title: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The hardest part wasn\'t any one feed. It was keeping more than 20 of them honest. Sources fail quietly: an API changes or a page moves, and a dashboard keeps showing yesterday\'s picture as if it were today\'s. Recording each job\'s last good run turned that hidden failure into a visible one.',
+          },
+          {
+            type: 'p',
+            text: 'Running it like a product, with a plan, acceptance criteria and test cases written before any code, is what let it keep growing without breaking. That is the same process I bring to work.',
+          },
+        ],
+      },
     ],
   },
   {
@@ -480,9 +581,17 @@ export const projects: Project[] = [
         blocks: [
           {
             type: 'p',
-            text: "Oracle is a six-step workflow built on Claude. It connects a project's shared record to Jira, Confluence and a code translation layer for engineering.",
+            text: 'Oracle is a six-step workflow built on Claude, with four working parts.',
           },
-          { type: 'placeholder', text: '[THE SIX STEPS, ONE LINE EACH.]' },
+          {
+            type: 'list',
+            items: [
+              { lead: 'Shared record.', text: 'A Claude project holds everything the PM learns about a project.' },
+              { lead: 'Collateral.', text: 'Claude drafts the documents the team has agreed on from that record.' },
+              { lead: 'Jira and Confluence.', text: 'Where that collateral lands for the rest of the team.' },
+              { lead: 'Code translation layer.', text: 'Hands the agreed spec to engineering to start development.' },
+            ],
+          },
         ],
       },
       {
@@ -502,7 +611,20 @@ export const projects: Project[] = [
           },
         ],
       },
-      WHAT_I_LEARNED,
+      {
+        id: 'learned',
+        title: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The hard part of bringing AI into a product team isn\'t the model. It is agreeing on what the shared record should hold, and which collateral the team trusts enough to hand straight to engineering. Building to a three-week demo deadline forced those decisions early.',
+          },
+          {
+            type: 'p',
+            text: 'The next step is the feature availability assistant: plain-language answers about the roadmap, drawn from the same Jira data.',
+          },
+        ],
+      },
     ],
   },
 ]

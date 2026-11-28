@@ -52,7 +52,7 @@ export default function Blocks({ blocks }: { blocks: Block[] }) {
           case 'table':
             return (
               <div key={i} className="table-wrap">
-                <table className="table">
+                <table className={`table${b.align === 'left' ? ' left' : ''}`}>
                   <caption>{b.caption}</caption>
                   <thead>
                     <tr>
