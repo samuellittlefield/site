@@ -14,11 +14,10 @@ export default function Home() {
         <section className="intro" aria-label="Introduction">
           <div>
             <h1 className="display">
-              I build small, careful tools out of <em>public data.</em>
+              An almanac for the slow and the <em>sudden.</em>
             </h1>
             <p className="lede">
-              Product manager. Recent work covers federal energy permitting, residential electricity rates and
-              election polling. Each project says what its numbers are and where they came from.
+              Projects by Samuel Littlefield, product manager.
             </p>
           </div>
           <nav className="toc" aria-label="Contents">

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: '%s · Samuel Littlefield',
   },
   description:
-    'Product manager building small, careful tools out of public data: federal energy permitting, residential electricity rates and election polling.',
+    'An almanac for the slow and the sudden. Projects by Samuel Littlefield, product manager: federal energy permitting, residential electricity rates, election polling and live news.',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
