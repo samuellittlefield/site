@@ -17,7 +17,9 @@ export default function Home() {
               An almanac for the slow and the <em>sudden.</em>
             </h1>
             <p className="lede">
-              Projects by Samuel Littlefield, product manager.
+              Some systems move in years, like a solar permit waiting on a federal desk. Others turn in an hour,
+              like a news cycle or the evening peak on a power bill. I’m a product manager, and I build tools from
+              public data that keep time with both.
             </p>
           </div>
           <nav className="toc" aria-label="Contents">
